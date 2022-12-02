@@ -5,10 +5,13 @@
 typedef struct node_t
     {
         int value;
-        // left
-        // right
-        
-    } ; 
+        struct node_t* left;
+        struct node_t* right;
+    }; 
+
+
+
+
 
 
 

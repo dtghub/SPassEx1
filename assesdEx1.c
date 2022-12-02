@@ -18,6 +18,7 @@ int search(node_t * node, int toFind) {
 
 
 node_t * createTree(int firstElem) {
+    // Use arbtrary size of 100 node for now
     ptr = (node_t*) malloc(100);
     topNode.value = firstElem;
     return ptr;
@@ -27,7 +28,8 @@ node_t * createTree(int firstElem) {
 
 
 void destroyTree(node_t * node) {
-
+    // free up the menory used for the data struct when done
+    free(node);
 }
 
 

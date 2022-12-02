@@ -36,6 +36,10 @@ void destroyTree(node_t * node) {
 
 
 void insert(node_t * node, int elem) {
+    // steps needed
+    // check if valToInsert is bigger or lower than current node
+    // if bigger look at right, if smaller look at left - if the same then don't add
+    // if left or right node doesn't exist then add this new node, otherwise repeat previous step
 
 }
 
@@ -51,7 +55,18 @@ int main() {
     // mycode here
 
     // use malloc to create the nodes
-    node_t rootNode = createTree(10)
+    node_t rootNode = createTree(10);
+
+
+
+
+
+
+
+
+    // clean up when done
+    destroyTree(rootNode);
+
 }
 
 

@@ -18,7 +18,9 @@ int search(node_t * node, int toFind) {
 
 
 node_t * createTree(int firstElem) {
-    return 1;
+    ptr = (node_t*) malloc(100);
+    topNode.value = firstElem;
+    return ptr;
 }
 
 
@@ -45,6 +47,9 @@ void delete(node_t * node, int elem) {
 
 int main() {
     // mycode here
+
+    // use malloc to create the nodes
+    node_t rootNode = createTree(10)
 }
 
 

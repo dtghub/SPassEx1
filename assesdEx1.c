@@ -1,4 +1,4 @@
-
+#include <stdlib.h>
 
 
 
@@ -26,7 +26,7 @@ int search(node_t * node, int toFind) {
 
 node_t * createTree(int firstElem) {
     // create a new root node
-    node_t *topNode = malloc(1);
+    node_t *topNode = malloc(sizeof(node_t));
     topNode->value = firstElem;
     topNode->left = NULL;
     topNode->right = NULL;
@@ -49,10 +49,19 @@ void destroyTree(node_t * node) {
 
 
 
+void insert_here(node_t *node, int elem){
+    // Create a new node
+}
+
+
+
 node_t walk_insert(node_t *node, int elem){
     if (elem < node->value) {
             if (node->left != NULL) {
-
+                walk_insert(node->left, elem);
+            }
+            else {
+                insert_here(node->left, elem)
             }
     }
 }
@@ -63,7 +72,7 @@ node_t walk_insert(node_t *node, int elem){
 void insert(node_t * node, int elem) {
     // steps needed
     if (elem != node->value) {
-        
+        walk_insert(node, elem);
         }
     
 
@@ -95,7 +104,7 @@ int main() {
     // node_t rootNode = createTree(10);
 
 
-    
+
 
 
 

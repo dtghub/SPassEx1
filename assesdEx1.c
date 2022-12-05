@@ -26,9 +26,12 @@ int search(node_t * node, int toFind) {
 
 node_t * createTree(int firstElem) {
     // create a new root node
-    ptr = (node_t*) malloc(100);
-    topNode.value = firstElem;
-    return ptr;
+    node_t *topNode = malloc(1);
+    topNode->value = firstElem;
+    topNode->left = NULL;
+    topNode->right = NULL;
+
+    return topNode;
 }
 
 
@@ -46,9 +49,26 @@ void destroyTree(node_t * node) {
 
 
 
+node_t walk_insert(node_t *node, int elem){
+    if (elem < node->value) {
+            if (node->left != NULL) {
+
+            }
+    }
+}
+
+
+
 
 void insert(node_t * node, int elem) {
     // steps needed
+    if (elem != node->value) {
+        
+        }
+    
+
+
+
     // check if valToInsert is bigger or lower than current node
     // if bigger look at right, if smaller look at left - if the same then don't add
     // if left or right node doesn't exist then add this new node, otherwise repeat previous step
@@ -72,10 +92,10 @@ int main() {
     // mycode here
 
     // use malloc to create the nodes
-    node_t rootNode = createTree(10);
+    // node_t rootNode = createTree(10);
 
 
-
+    
 
 
 

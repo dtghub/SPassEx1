@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 
 
@@ -52,7 +53,7 @@ node_t * createTree(int firstElem) {
     // create a new root node
     node_t *topNode = malloc(sizeof(node_t));
 
-    topNode->parent = NULL;
+    topNode->parent = NULL; // can probably remove this by using a 'pNode' where relevant - check!
     topNode->value = firstElem;
     topNode->left = NULL;
     topNode->right = NULL;
@@ -78,7 +79,7 @@ void destroyTree(node_t * node) {
     if (node != NULL) {
 
         node_t *cNode = node;
-        node_t *pNode = node->parent;
+        node_t *pNode = cNode->parent;
         
         // descend through tree in a leftmost direction until we reach a leaf
         while (pNode != NULL && cNode->left != NULL && cNode->right != NULL) {
@@ -94,6 +95,7 @@ void destroyTree(node_t * node) {
                     cNode = cNode->right;
                 }
             }
+            // make sure this isn't the root node
             else if (pNode != NULL)
             {
                 // release the leaf
@@ -101,10 +103,10 @@ void destroyTree(node_t * node) {
                 cNode = NULL;
                 cNode = pNode;
             }
-            
         }
-
-
+        // loop ends when only the root node remains
+        free(cNode);
+        cNode = NULL;
     }
 }
 
@@ -126,6 +128,7 @@ void insert(node_t * node, int elem) {
         node_t *iNode = malloc(sizeof(node_t));
         // iNode->parent is assigned below
         iNode->value = elem;
+        printf("%i", elem);
         iNode->left = NULL;
         iNode->right = NULL;
         
@@ -146,11 +149,11 @@ void insert(node_t * node, int elem) {
             }
         }
 
-        iNode->parent = cNode;
+        iNode->parent = pNode; // is parent actually needed?
 
         if (pNode == NULL)
         {
-            node = iNode;
+            node = iNode; // it is possible that the root node can have previously been removed using 'delete' without destroying the tree
         }
         else if (iNode->value < cNode->value)
         {
@@ -187,7 +190,22 @@ int main() {
     // use malloc to create the nodes
     // node_t rootNode = createTree(10);
 
+    node_t *myTree;
 
+    myTree = createTree(50);
+    insert(myTree, 30);
+
+
+
+
+    // struct node* root = NULL;
+    // root = insert(root, 50);
+    // root = insert(root, 30);
+    // root = insert(root, 20);
+    // root = insert(root, 40);
+    // root = insert(root, 70);
+    // root = insert(root, 60);
+    // root = insert(root, 80);
 
 
 

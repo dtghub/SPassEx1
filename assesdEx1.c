@@ -14,12 +14,27 @@ typedef struct node_t
 int search(node_t * node, int toFind) {
 
     // search algorithm is; test the node.value to see if it is grater or less than the value you are looking for, if the value you seek is less than node.value, follow left, otherwise follow right.
-    // When found, retunr the node.
+    // When found, return the node.
+    while (node != NULL && toFind != node->value)
+    {
+        if (toFind < node->value) {
+            node = node->left
+        } else
+        {
+            node = node->right
+        }
+        
+    }
+    
+    int search_result;
+    if (node == NULL) {
+        search_result = 0;
+    } else {
+        search_result = 1;
+    }
 
-
-
-
-
+    // return a 1 if found, and a 0 if not found
+    return search_result;
 }
 
 
@@ -49,27 +64,6 @@ void destroyTree(node_t * node) {
 
     free(node);
 }
-
-
-
-void insert_here(node_t *node, int elem){
-    // Create a new node
-}
-
-
-
-node_t walk_insert(node_t *node, int elem){
-    if (elem < node->value) {
-            if (node->left != NULL) {
-                walk_insert(node->left, elem);
-            }
-            else {
-                insert_here(node->left, elem);
-            }
-    }
-}
-
-
 
 
 

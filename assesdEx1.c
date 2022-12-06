@@ -4,6 +4,7 @@
 
 typedef struct node_t
     {
+        struct node_t* parent;
         int value;
         struct node_t* left;
         struct node_t* right;
@@ -27,6 +28,8 @@ int search(node_t * node, int toFind) {
 node_t * createTree(int firstElem) {
     // create a new root node
     node_t *topNode = malloc(sizeof(node_t));
+
+    topNode->parent = NULL;
     topNode->value = firstElem;
     topNode->left = NULL;
     topNode->right = NULL;
@@ -61,7 +64,7 @@ node_t walk_insert(node_t *node, int elem){
                 walk_insert(node->left, elem);
             }
             else {
-                insert_here(node->left, elem)
+                insert_here(node->left, elem);
             }
     }
 }
@@ -69,11 +72,51 @@ node_t walk_insert(node_t *node, int elem){
 
 
 
+
+
 void insert(node_t * node, int elem) {
     // steps needed
-    if (elem != node->value) {
-        walk_insert(node, elem);
+    //search for and if not found create inode (using the elem as the value) 
+    // if the node already exists then there's nothin to insert - but do we return anything to indicate this or just fail silently?
+
+    if (!search(node, elem)) {
+        // cnode = child node
+        // pnode = parent node
+        // inode = node to insert
+        
+        
+        // Create node to insert and populate with values and NULLs for node pointers
+        node_t *iNode = malloc(sizeof(node_t));
+        iNode->parent = NULL;
+        iNode->value = elem;
+        iNode->left = NULL;
+        iNode->right = NULL;
+        
+        
+        
+        node_t *cNode = node;
+        node_t *pNode;
+        while (cNode != NULL) {
+            pNode = cNode;
+            if (iNode->value < cNode->value) {
+                cNode = cNode->left;
+            } else {
+                cNode = cNode->right;
+            }
         }
+
+        iNode->parent = cNode;
+
+        if (pNode == NULL) {
+            node = iNode;
+        } else if (iNode->value < cNode->value) {
+            pNode->left = iNode;
+        }
+    }
+
+
+    
+
     
 
 

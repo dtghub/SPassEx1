@@ -19,18 +19,24 @@ int search(node_t * node, int toFind) {
     // When found, return the node.
     while (node != NULL && toFind != node->value)
     {
-        if (toFind < node->value) {
+        if (toFind < node->value)
+        {
             node = node->left;
-        } else {
+        }
+        else
+        {
             node = node->right;
         }
         
     }
     
     int search_result;
-    if (node == NULL) {
+    if (node == NULL)
+    {
         search_result = 0;
-    } else {
+    }
+    else
+    {
         search_result = 1;
     }
 
@@ -65,21 +71,39 @@ void destroyTree(node_t * node) {
 
     // To find the leaves, walk down the left nodes as far as possible, then come back up until you can go right, and then follow the left, come back up until you can go right etc - each time that you land on a leaf node, delete it and then continue at the parent node...
 
+        // cnode = child node
+        // pnode = parent node
+
+
     if (node != NULL) {
 
         node_t *cNode = node;
-        node_t *pNode = NULL;
+        node_t *pNode = node->parent;
         
-        while (cNode->left != NULL && cNode->right != NULL) {
-            pNode = cNode;
-            if (cNode->left != NULL) {
-                cNode = cNode->left;
-            } else {
-                cNode = cNode->right;
+        // descend through tree in a leftmost direction until we reach a leaf
+        while (pNode != NULL && cNode->left != NULL && cNode->right != NULL) {
+            if  (cNode->left != NULL && cNode->right != NULL)
+            {
+                pNode = cNode;
+                if (cNode->left != NULL)
+                {
+                    cNode = cNode->left;
+                }
+                else if (cNode->right != NULL)
+                {
+                    cNode = cNode->right;
+                }
             }
+            else if (pNode != NULL)
+            {
+                // release the leaf
+                free(cNode);
+                cNode = NULL;
+                cNode = pNode;
+            }
+            
         }
-        free(cNode);
-        cNode = NULL;
+
 
     }
 }
@@ -92,7 +116,8 @@ void insert(node_t * node, int elem) {
     //search for and if not found create inode (using the elem as the value) 
     // if the node already exists then there's nothing to insert - but do we return anything to indicate this or just fail silently?
 
-    if (!search(node, elem)) {
+    if (!search(node, elem))
+    {
         // cnode = child node
         // pnode = parent node
         // inode = node to insert
@@ -108,22 +133,31 @@ void insert(node_t * node, int elem) {
         
         node_t *cNode = node;
         node_t *pNode = NULL;
-        while (cNode != NULL) {
+        while (cNode != NULL) 
+        {
             pNode = cNode;
-            if (iNode->value < cNode->value) {
+            if (iNode->value < cNode->value)
+            {
                 cNode = cNode->left;
-            } else {
+            }
+            else
+            {
                 cNode = cNode->right;
             }
         }
 
         iNode->parent = cNode;
 
-        if (pNode == NULL) {
+        if (pNode == NULL)
+        {
             node = iNode;
-        } else if (iNode->value < cNode->value) {
+        }
+        else if (iNode->value < cNode->value)
+        {
             pNode->left = iNode;
-        } else {
+        }
+        else
+        {
             pNode->right = iNode;
         }
     }

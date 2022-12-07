@@ -79,20 +79,24 @@ void destroyTree(node_t * node) {
     if (node != NULL) {
 
         node_t *cNode = node;
-        node_t *pNode = cNode->parent;
-        
+        node_t *pNode = NULL;
+        printf("\nNode value = %d", node->value);
         // descend through tree in a leftmost direction until we reach a leaf
-        while (pNode != NULL && cNode->left != NULL && cNode->right != NULL) {
-            if  (cNode->left != NULL && cNode->right != NULL)
+        while (pNode != NULL || cNode->left != NULL || cNode->right != NULL)
+        {
+            if  (cNode->left != NULL || cNode->right != NULL)
             {
+                printf("\nAbout to descend tree; Node value = %d", cNode->value);
                 pNode = cNode;
                 if (cNode->left != NULL)
                 {
                     cNode = cNode->left;
+                    printf("\nDescending tree to left; Node value = %d", cNode->value);
                 }
                 else if (cNode->right != NULL)
                 {
                     cNode = cNode->right;
+                    printf("\nDescending tree to right; Node value = %d", cNode->value);
                 }
             }
             // make sure this isn't the root node
@@ -102,9 +106,12 @@ void destroyTree(node_t * node) {
                 free(cNode);
                 cNode = NULL;
                 cNode = pNode;
+                // Need to update the left or right reference to NULL as the child leaf has been deleted!
+                printf("\nDeleted leaf cNode, Ascending tree to parent; Node value = %d", cNode->value);
             }
         }
         // loop ends when only the root node remains
+        printf("\nShould be at patrent, About to delete; Node value = %d", cNode->value);
         free(cNode);
         cNode = NULL;
     }
@@ -159,7 +166,6 @@ void insertNode(node_t * node, int elem) {
             node = iNode; // it is possible that the root node can have previously been removed using 'delete' without destroying the tree
         }
         else if (iNode->value < pNode->value)
-        // else if (1 < cNode->value)
         {
             pNode->left = iNode;
             printf("\nHello from line 126!!: %i", elem);
@@ -219,18 +225,26 @@ int main() {
 
 
 
-    // struct node* root = NULL;
-    // root = insert(root, 50);
-    // root = insert(root, 30);
-    // root = insert(root, 20);
-    // root = insert(root, 40);
-    // root = insert(root, 70);
-    // root = insert(root, 60);
-    // root = insert(root, 80);
 
+    // insertNode(myTree, 50);
+    // insertNode(myTree, 30);
+    insertNode(myTree, 20);
+    insertNode(myTree, 40);
+    insertNode(myTree, 70);
+    insertNode(myTree, 60);
+    insertNode(myTree, 80);
 
+    printf("\nSearch for 50: %i", search(myTree, 50));
+    printf("\nSearch for 30: %i", search(myTree, 30));
+    printf("\nSearch for 20: %i", search(myTree, 20));
+    printf("\nSearch for 200: %i", search(myTree, 200));
 
-
+    destroyTree(myTree);
+    printf("Tree destroyed! Or is it??; mytree = %d", myTree->value);
+    printf("\nSearch for 50: %i", search(myTree, 50));
+    printf("\nSearch for 30: %i", search(myTree, 30));
+    printf("\nSearch for 20: %i", search(myTree, 20));
+    printf("\nSearch for 200: %i", search(myTree, 200));
 
 
     // clean up when done

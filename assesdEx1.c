@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-
+// #include <unistd.h>
 
 
 typedef struct node_t
@@ -113,19 +113,22 @@ void destroyTree(node_t * node) {
 
 
 
-void insert(node_t * node, int elem) {
+void insertNode(node_t * node, int elem) {
     // steps needed
     //search for and if not found create inode (using the elem as the value) 
     // if the node already exists then there's nothing to insert - but do we return anything to indicate this or just fail silently?
+    printf("Hello from line 120!!: %i", elem);
+    // sleep(1);
 
     if (!search(node, elem))
     {
         // cnode = child node
         // pnode = parent node
         // inode = node to insert
-        
+        printf("Hello from line 126!!: %i", elem);
         // Create node to insert and populate with values and NULLs for node pointers
         node_t *iNode = malloc(sizeof(node_t));
+        if (!iNode) return;
         // iNode->parent is assigned below
         iNode->value = elem;
         printf("%i", elem);
@@ -155,9 +158,11 @@ void insert(node_t * node, int elem) {
         {
             node = iNode; // it is possible that the root node can have previously been removed using 'delete' without destroying the tree
         }
-        else if (iNode->value < cNode->value)
+        else if (iNode->value < pNode->value)
+        // else if (1 < cNode->value)
         {
             pNode->left = iNode;
+            printf("\nHello from line 126!!: %i", elem);
         }
         else
         {
@@ -193,8 +198,24 @@ int main() {
     node_t *myTree;
 
     myTree = createTree(50);
-    insert(myTree, 30);
+    printf("\nSearch for 50: %i", search(myTree, 50));
+    printf("\nSearch for 30: %i", search(myTree, 30));
+    if (myTree == NULL)
+    {
+        printf("\nNull value!");
+    }
+    else
+    {
+        printf("\nnot null!");
+        printf("\nNode->value is: %i\n", myTree->value);
+    }
 
+    printf("Hello from line 209!!: %p\n", myTree->left);
+    insertNode(myTree, 30);
+    printf("\nSearch for 50: %i", search(myTree, 50));
+    printf("\nSearch for 30: %i", search(myTree, 30));
+    printf("\nSearch for 20: %i", search(myTree, 20));
+    printf("\nSearch for 200: %i", search(myTree, 200));
 
 
 

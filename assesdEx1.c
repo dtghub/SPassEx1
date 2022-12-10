@@ -199,12 +199,50 @@ void insertNode(node_t * node, int elem) {
 
 void delete(node_t * node, int elem) {
 
-}
+    node_t *lNode = node->left;
+    node_t *rNode = node->right;
     // search the tree for the element.
 
     // 1. If the node to be deleted is a leaf, there is nothing else to do.
+
+    if (lNode == NULL && rNode == NULL)
+    {
+        free(node);
+        node = NULL;
+        return;
+    }
+
+
+
     // 2. If the node to be deleted has exactly one child, that child will move up to replace its parent.
+
+
+    if (lNode == NULL ^ rNode == NULL)
+    {
+        node_t *pNode = node->parent;
+        if (lNode != NULL)
+        {
+            pNode->left = lNode;
+            lNode->parent = pNode
+        }
+        else
+        {
+            pNode->right = rNode;
+            rNode->parent = pNode
+        }
+        free(node);
+        node = NULL;
+        return;
+    }
+
+
+
+
     // 3. If the node to be deleted has two children, you need to find the successor, i.e. the value that would replace the one to be deleted. Typically, this is the smallest value in the right subtree.
+
+
+}
+
 
 
 int main() {
@@ -245,6 +283,9 @@ int main() {
     insertNode(myTree, 70);
     insertNode(myTree, 60);
     insertNode(myTree, 80);
+    insertNode(myTree, 10);
+    insertNode(myTree, 5);
+    insertNode(myTree, 8);
 
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));

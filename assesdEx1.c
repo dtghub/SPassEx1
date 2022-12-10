@@ -82,7 +82,7 @@ void destroyTree(node_t * node) {
         node_t *pNode = NULL;
         printf("\nNode value = %d", node->value);
         // descend through tree in a leftmost direction until we reach a leaf
-        while (pNode != NULL || cNode->left != NULL || cNode->right != NULL)
+        while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
         {
             if  (cNode->left != NULL || cNode->right != NULL)
             {
@@ -100,18 +100,28 @@ void destroyTree(node_t * node) {
                 }
             }
             // make sure this isn't the root node
-            else if (pNode != NULL)
+            else if (cNode->parent != NULL)
             {
+                pNode = cNode->parent;
+                printf("\nDeleted leaf cNode = %d, Ascending tree to parent; Node value = %d\n", cNode->value, pNode->value);
                 // release the leaf
                 free(cNode);
+
                 cNode = NULL;
                 cNode = pNode;
                 // Need to update the left or right reference to NULL as the child leaf has been deleted!
-                printf("\nDeleted leaf cNode, Ascending tree to parent; Node value = %d", cNode->value);
+                if (cNode->left != NULL)
+                {
+                    cNode->left = NULL;
+                }
+                else if (cNode->right != NULL)
+                {
+                    cNode->right = NULL;
+                }
             }
         }
         // loop ends when only the root node remains
-        printf("\nShould be at patrent, About to delete; Node value = %d", cNode->value);
+        printf("\nShould be at patrent, About to delete; Node value = %d\n", cNode->value);
         free(cNode);
         cNode = NULL;
     }
@@ -124,7 +134,7 @@ void insertNode(node_t * node, int elem) {
     // steps needed
     //search for and if not found create inode (using the elem as the value) 
     // if the node already exists then there's nothing to insert - but do we return anything to indicate this or just fail silently?
-    printf("Hello from line 120!!: %i", elem);
+    printf("Hello from line 120!!: %i\n", elem);
     // sleep(1);
 
     if (!search(node, elem))
@@ -132,13 +142,13 @@ void insertNode(node_t * node, int elem) {
         // cnode = child node
         // pnode = parent node
         // inode = node to insert
-        printf("Hello from line 126!!: %i", elem);
+        printf("Hello from line 143!!: %i\n", elem);
         // Create node to insert and populate with values and NULLs for node pointers
         node_t *iNode = malloc(sizeof(node_t));
         if (!iNode) return;
         // iNode->parent is assigned below
         iNode->value = elem;
-        printf("%i", elem);
+        printf("%i inserted\n", elem);
         iNode->left = NULL;
         iNode->right = NULL;
         
@@ -152,10 +162,12 @@ void insertNode(node_t * node, int elem) {
             if (iNode->value < cNode->value)
             {
                 cNode = cNode->left;
+                printf("Went left\n");
             }
             else
             {
                 cNode = cNode->right;
+                printf("Went right\n");
             }
         }
 
@@ -168,7 +180,7 @@ void insertNode(node_t * node, int elem) {
         else if (iNode->value < pNode->value)
         {
             pNode->left = iNode;
-            printf("\nHello from line 126!!: %i", elem);
+            printf("\nHello from line 179!!: %i\n", elem);
         }
         else
         {
@@ -240,7 +252,7 @@ int main() {
     printf("\nSearch for 200: %i", search(myTree, 200));
 
     destroyTree(myTree);
-    printf("Tree destroyed! Or is it??; mytree = %d", myTree->value);
+    printf("Tree destroyed! Or is it??; mytree = %i", myTree);
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
     printf("\nSearch for 20: %i", search(myTree, 20));

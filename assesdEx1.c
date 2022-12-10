@@ -217,18 +217,18 @@ void delete(node_t * node, int elem) {
     // 2. If the node to be deleted has exactly one child, that child will move up to replace its parent.
 
 
-    if (lNode == NULL ^ rNode == NULL)
+    else if (lNode == NULL ^ rNode == NULL)
     {
         node_t *pNode = node->parent;
         if (lNode != NULL)
         {
             pNode->left = lNode;
-            lNode->parent = pNode
+            lNode->parent = pNode;
         }
         else
         {
             pNode->right = rNode;
-            rNode->parent = pNode
+            rNode->parent = pNode;
         }
         free(node);
         node = NULL;
@@ -239,6 +239,27 @@ void delete(node_t * node, int elem) {
 
 
     // 3. If the node to be deleted has two children, you need to find the successor, i.e. the value that would replace the one to be deleted. Typically, this is the smallest value in the right subtree.
+
+
+    // descend the right subtree to find the smallest node in the subtree
+
+
+    else
+    {
+        // use sNode to track the smallest node in the rigth subtree of node
+        node_t *sNode = node->right;
+        while (sNode->left != NULL)
+        {
+            sNode = sNode->left;
+        }
+        rNode->parent = node->parent;
+        sNode->left = lNode;
+        lNode->parent = sNode;
+        
+
+        
+    }
+
 
 
 }

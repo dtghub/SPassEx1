@@ -13,9 +13,7 @@ typedef struct node_t
 
 
 
-
-int search(node_t * node, int toFind) {
-
+node_t *return_node(node_t * node, int toFind) {
     // search algorithm is; test the node.value to see if it is grater or less than the value you are looking for, if the value you seek is less than node.value, follow left, otherwise follow right.
     // When found, return the node.
     while (node != NULL && toFind != node->value)
@@ -31,8 +29,21 @@ int search(node_t * node, int toFind) {
         
     }
     
+    return node;
+}
+
+
+
+
+
+
+int search(node_t * node, int toFind) {
+
+    node_t *search_node = NULL;
+    search_node = return_node(node, toFind);
+
     int search_result;
-    if (node == NULL)
+    if (search_node == NULL)
     {
         search_result = 0;
     }
@@ -121,7 +132,7 @@ void destroyTree(node_t * node) {
             }
         }
         // loop ends when only the root node remains
-        printf("\nShould be at patrent, About to delete; Node value = %d\n", cNode->value);
+        printf("\nShould be at parent, About to delete; Node value = %d\n", cNode->value);
         free(cNode);
         cNode = NULL;
     }
@@ -198,68 +209,74 @@ void insertNode(node_t * node, int elem) {
 
 
 void delete(node_t * node, int elem) {
+    // need to get node that elem points to
 
-    node_t *lNode = node->left;
-    node_t *rNode = node->right;
-    // search the tree for the element.
 
-    // 1. If the node to be deleted is a leaf, there is nothing else to do.
+    node_t *dNode = return_node(node, elem);
 
-    if (lNode == NULL && rNode == NULL)
+    if (dNode != NULL)
     {
-        free(node);
-        node = NULL;
-        return;
-    }
+        node_t *lNode = dNode->left;
+        node_t *rNode = dNode->right;
+        // search the tree for the element.
 
+        // 1. If the node to be deleted is a leaf, there is nothing else to do.
 
-
-    // 2. If the node to be deleted has exactly one child, that child will move up to replace its parent.
-
-
-    else if (lNode == NULL ^ rNode == NULL)
-    {
-        node_t *pNode = node->parent;
-        if (lNode != NULL)
+        if (lNode == NULL && rNode == NULL)
         {
-            pNode->left = lNode;
-            lNode->parent = pNode;
+            free(dNode);
+            dNode = NULL;
+            return;
         }
+
+
+
+        // 2. If the node to be deleted has exactly one child, that child will move up to replace its parent.
+
+
+        else if (lNode == NULL ^ rNode == NULL)
+        {
+            node_t *pNode = dNode->parent;
+            if (lNode != NULL)
+            {
+                pNode->left = lNode;
+                lNode->parent = pNode;
+            }
+            else
+            {
+                pNode->right = rNode;
+                rNode->parent = pNode;
+            }
+            free(dNode);
+            dNode = NULL;
+            return;
+        }
+
+
+
+
+        // 3. If the node to be deleted has two children, you need to find the successor, i.e. the value that would replace the one to be deleted. Typically, this is the smallest value in the right subtree.
+
+
+        // descend the right subtree to find the smallest node in the subtree
+
+
         else
         {
-            pNode->right = rNode;
-            rNode->parent = pNode;
+            // use sNode to track the smallest node in the rigth subtree of node
+            node_t *sNode = dNode->right;
+            while (sNode->left != NULL)
+            {
+                sNode = sNode->left;
+            }
+            rNode->parent = dNode->parent;
+            sNode->left = lNode;
+            lNode->parent = sNode;
+            
+
+            
         }
-        free(node);
-        node = NULL;
-        return;
     }
-
-
-
-
-    // 3. If the node to be deleted has two children, you need to find the successor, i.e. the value that would replace the one to be deleted. Typically, this is the smallest value in the right subtree.
-
-
-    // descend the right subtree to find the smallest node in the subtree
-
-
-    else
-    {
-        // use sNode to track the smallest node in the rigth subtree of node
-        node_t *sNode = node->right;
-        while (sNode->left != NULL)
-        {
-            sNode = sNode->left;
-        }
-        rNode->parent = node->parent;
-        sNode->left = lNode;
-        lNode->parent = sNode;
-        
-
-        
-    }
-
 
 
 }
@@ -308,12 +325,15 @@ int main() {
     insertNode(myTree, 5);
     insertNode(myTree, 8);
 
+    // delete()
+
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
     printf("\nSearch for 20: %i", search(myTree, 20));
     printf("\nSearch for 200: %i", search(myTree, 200));
 
     destroyTree(myTree);
+    myTree = NULL;
     printf("Tree destroyed! Or is it??; mytree = %i", myTree);
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
@@ -322,8 +342,7 @@ int main() {
 
 
     // clean up when done
-    // destroyTree(rootNode);
-
+ 
 }
 
 

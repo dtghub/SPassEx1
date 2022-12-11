@@ -218,17 +218,29 @@ void delete(node_t * node, int elem) {
     {
         node_t *lNode = dNode->left;
         node_t *rNode = dNode->right;
+        node_t *pNode = dNode->parent;
         // search the tree for the element.
 
         // 1. If the node to be deleted is a leaf, there is nothing else to do.
 
         if (lNode == NULL && rNode == NULL)
         {
+            if (pNode != NULL)
+            {
+                if (pNode->left == dNode)
+                {
+                    pNode->left = NULL;
+                }
+                else
+                {
+                    pNode->right = NULL;
+                }
+            }
             free(dNode);
             dNode = NULL;
             return;
         }
-
+    
 
 
         // 2. If the node to be deleted has exactly one child, that child will move up to replace its parent.
@@ -236,7 +248,6 @@ void delete(node_t * node, int elem) {
 
         else if (lNode == NULL ^ rNode == NULL)
         {
-            node_t *pNode = dNode->parent;
             if (lNode != NULL)
             {
                 pNode->left = lNode;
@@ -263,16 +274,22 @@ void delete(node_t * node, int elem) {
 
         else
         {
-            // use sNode to track the smallest node in the rigth subtree of node
-            node_t *sNode = dNode->right;
+            // use sNode to track the seek to the smallest node in the rigth subtree of node
+            node_t *sNode = rNode;
             while (sNode->left != NULL)
             {
                 sNode = sNode->left;
             }
-            rNode->parent = dNode->parent;
-            sNode->left = lNode;
-            lNode->parent = sNode;
-            
+
+            // copy the node's data over that of the node to be deleted
+            dNode->value = sNode->value;
+            // now the original sNode needs to be deleted
+            delete(rNode, sNode->value);
+
+
+
+
+
 
             
         }
@@ -319,17 +336,33 @@ int main() {
     insertNode(myTree, 20);
     insertNode(myTree, 40);
     insertNode(myTree, 70);
+    insertNode(myTree, 75);
     insertNode(myTree, 60);
     insertNode(myTree, 80);
+    insertNode(myTree, 200);
     insertNode(myTree, 10);
     insertNode(myTree, 5);
     insertNode(myTree, 8);
+    insertNode(myTree, 35);
+    insertNode(myTree, 45);
+    insertNode(myTree, 47);
 
     // delete()
+    delete(myTree, 50);
+    delete(myTree, 30);
+    printf("deteted node\n");
 
+
+
+    printf("\nSearch for 80: %i", search(myTree, 80));
+    printf("\nSearch for 75: %i", search(myTree, 75));
+    printf("\nSearch for 200: %i", search(myTree, 200));
     printf("\nSearch for 50: %i", search(myTree, 50));
+    printf("\nSearch for 40: %i", search(myTree, 40));
     printf("\nSearch for 30: %i", search(myTree, 30));
     printf("\nSearch for 20: %i", search(myTree, 20));
+    printf("\nSearch for 10: %i", search(myTree, 10));
+    printf("\nSearch for 5: %i", search(myTree, 5));
     printf("\nSearch for 200: %i", search(myTree, 200));
 
     destroyTree(myTree);

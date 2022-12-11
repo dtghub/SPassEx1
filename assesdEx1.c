@@ -79,7 +79,7 @@ node_t * createTree(int firstElem) {
 void destroyTree(node_t * node) {
     // free up the menory used for the data struct when done
 
-    // Need to walk through the tree and delete the end (leaf) nodes, making sure we don't orphan any nodes.
+    // Walks through the tree and delete the end (leaf) nodes, making sure we don't orphan any nodes.
 
     // To find the leaves, walk down the left nodes as far as possible, then come back up until you can go right, and then follow the left, come back up until you can go right etc - each time that you land on a leaf node, delete it and then continue at the parent node...
 
@@ -91,30 +91,25 @@ void destroyTree(node_t * node) {
 
         node_t *cNode = node;
         node_t *pNode = NULL;
-        printf("\nNode value = %d", node->value);
         // descend through tree in a leftmost direction until we reach a leaf
         while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
         {
             if  (cNode->left != NULL || cNode->right != NULL)
             {
-                printf("\nAbout to descend tree; Node value = %d", cNode->value);
                 pNode = cNode;
                 if (cNode->left != NULL)
                 {
                     cNode = cNode->left;
-                    printf("\nDescending tree to left; Node value = %d", cNode->value);
                 }
                 else if (cNode->right != NULL)
                 {
                     cNode = cNode->right;
-                    printf("\nDescending tree to right; Node value = %d", cNode->value);
                 }
             }
             // make sure this isn't the root node
             else if (cNode->parent != NULL)
             {
                 pNode = cNode->parent;
-                printf("\nDeleted leaf cNode = %d, Ascending tree to parent; Node value = %d\n", cNode->value, pNode->value);
                 // release the leaf
                 free(cNode);
 
@@ -132,7 +127,6 @@ void destroyTree(node_t * node) {
             }
         }
         // loop ends when only the root node remains
-        printf("\nShould be at parent, About to delete; Node value = %d\n", cNode->value);
         free(cNode);
         cNode = NULL;
     }
@@ -141,25 +135,20 @@ void destroyTree(node_t * node) {
 
 
 
-void insertNode(node_t * node, int elem) {
+void insert(node_t * node, int elem) {
     // steps needed
     //search for and if not found create inode (using the elem as the value) 
-    // if the node already exists then there's nothing to insert - but do we return anything to indicate this or just fail silently?
-    printf("Hello from line 120!!: %i\n", elem);
-    // sleep(1);
 
     if (!search(node, elem))
     {
         // cnode = child node
         // pnode = parent node
         // inode = node to insert
-        printf("Hello from line 143!!: %i\n", elem);
         // Create node to insert and populate with values and NULLs for node pointers
         node_t *iNode = malloc(sizeof(node_t));
         if (!iNode) return;
         // iNode->parent is assigned below
         iNode->value = elem;
-        printf("%i inserted\n", elem);
         iNode->left = NULL;
         iNode->right = NULL;
         
@@ -173,12 +162,10 @@ void insertNode(node_t * node, int elem) {
             if (iNode->value < cNode->value)
             {
                 cNode = cNode->left;
-                printf("Went left\n");
             }
             else
             {
                 cNode = cNode->right;
-                printf("Went right\n");
             }
         }
 
@@ -191,7 +178,6 @@ void insertNode(node_t * node, int elem) {
         else if (iNode->value < pNode->value)
         {
             pNode->left = iNode;
-            printf("\nHello from line 179!!: %i\n", elem);
         }
         else
         {
@@ -285,17 +271,8 @@ void delete(node_t * node, int elem) {
             dNode->value = sNode->value;
             // now the original sNode needs to be deleted
             delete(rNode, sNode->value);
-
-
-
-
-
-
-            
         }
     }
-
-
 }
 
 
@@ -322,7 +299,7 @@ int main() {
     }
 
     printf("Hello from line 209!!: %p\n", myTree->left);
-    insertNode(myTree, 30);
+    insert(myTree, 30);
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
     printf("\nSearch for 20: %i", search(myTree, 20));
@@ -331,21 +308,21 @@ int main() {
 
 
 
-    // insertNode(myTree, 50);
-    // insertNode(myTree, 30);
-    insertNode(myTree, 20);
-    insertNode(myTree, 40);
-    insertNode(myTree, 70);
-    insertNode(myTree, 75);
-    insertNode(myTree, 60);
-    insertNode(myTree, 80);
-    insertNode(myTree, 200);
-    insertNode(myTree, 10);
-    insertNode(myTree, 5);
-    insertNode(myTree, 8);
-    insertNode(myTree, 35);
-    insertNode(myTree, 45);
-    insertNode(myTree, 47);
+    // insert(myTree, 50);
+    // insert(myTree, 30);
+    insert(myTree, 20);
+    insert(myTree, 40);
+    insert(myTree, 70);
+    insert(myTree, 75);
+    insert(myTree, 60);
+    insert(myTree, 80);
+    insert(myTree, 200);
+    insert(myTree, 10);
+    insert(myTree, 5);
+    insert(myTree, 8);
+    insert(myTree, 35);
+    insert(myTree, 45);
+    insert(myTree, 47);
 
     // delete()
     delete(myTree, 50);

@@ -116,45 +116,46 @@ node_t * destroyTree(node_t * node) {
 
 
     if (node == NULL) return node;
-    if (node->value == NULL) return node;
-
     node_t *cNode = node;
     node_t *pNode = NULL;
-    // descend through tree in a leftmost direction until we reach a leaf
-    while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
+    if (node->value != NULL)
     {
-        if  (cNode->left != NULL || cNode->right != NULL)
+        // descend through tree in a leftmost direction until we reach a leaf
+        while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
         {
-            pNode = cNode;
-            if (cNode->left != NULL)
+            if  (cNode->left != NULL || cNode->right != NULL)
             {
-                cNode = cNode->left;
+                pNode = cNode;
+                if (cNode->left != NULL)
+                {
+                    cNode = cNode->left;
+                }
+                else if (cNode->right != NULL)
+                {
+                    cNode = cNode->right;
+                }
             }
-            else if (cNode->right != NULL)
+            // make sure this isn't the root node
+            else if (cNode->parent != NULL)
             {
-                cNode = cNode->right;
+                pNode = cNode->parent;
+                // release the leaf
+                free(cNode);
+                cNode = NULL;
+                cNode = pNode;
+                // Need to update the left or right reference to NULL as the child leaf has been deleted!
+                if (cNode->left != NULL)
+                {
+                    cNode->left = NULL;
+                }
+                else if (cNode->right != NULL)
+                {
+                    cNode->right = NULL;
+                }
             }
         }
-        // make sure this isn't the root node
-        else if (cNode->parent != NULL)
-        {
-            pNode = cNode->parent;
-            // release the leaf
-            free(cNode);
-            cNode = NULL;
-            cNode = pNode;
-            // Need to update the left or right reference to NULL as the child leaf has been deleted!
-            if (cNode->left != NULL)
-            {
-                cNode->left = NULL;
-            }
-            else if (cNode->right != NULL)
-            {
-                cNode->right = NULL;
-            }
-        }
+        // loop ends when only the root node remains
     }
-    // loop ends when only the root node remains
     make_null(cNode); // this is probably an unnecessary precauion against the free function failing
     free(cNode);
     cNode = NULL;
@@ -348,6 +349,23 @@ int main() {
         printf("\nTree is empty");
     }
 
+    myTree = destroyTree(myTree);
+    treeStatus = tree_exists(myTree);
+    if (treeStatus == 2)
+    {
+        printf("\nTree found!\n");
+        printf("\nNode->value is: %i\n", myTree->value);
+    }
+    else if (treeStatus == 0)
+    {
+        printf("\nTree does not exist");
+    }
+    else
+    {
+        printf("\nTree is empty");
+    }
+
+    myTree = createTree(50);
     printf("Hello from line 209!!: %p\n", myTree->left);
     insert(myTree, 30);
     printf("\nSearch for 50: %i", search(myTree, 50));

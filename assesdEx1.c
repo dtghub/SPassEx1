@@ -12,13 +12,28 @@ typedef struct node_t
     } node_t; 
 
 
+void make_null(node_t * node) {
+    if (node == NULL) return;
+    node->left = NULL;
+    node->right = NULL;
+    node->value = NULL;
+    node->parent = NULL;
+}
+
 
 node_t *return_node(node_t * node, int toFind) {
     // search algorithm is; test the node.value to see if it is grater or less than the value you are looking for, if the value you seek is less than node.value, follow left, otherwise follow right.
     // When found, return the node.
-    while (node != NULL && toFind != node->value)
+    if (node == NULL) return NULL;
+    if (node->value == NULL) return NULL;
+
+    while (node != NULL)
     {
-        if (toFind < node->value)
+        if (toFind == node->value)
+        {
+            return node;
+        }
+        else if (toFind < node->value)
         {
             node = node->left;
         }
@@ -63,12 +78,10 @@ int search(node_t * node, int toFind) {
 node_t * createTree(int firstElem) {
     // create a new root node
     node_t *topNode = malloc(sizeof(node_t));
+    if (!topNode) return NULL;
 
-    topNode->parent = NULL; // can probably remove this by using a 'pNode' where relevant - check!
+    make_null(topNode);
     topNode->value = firstElem;
-    topNode->left = NULL;
-    topNode->right = NULL;
-
     return topNode;
 }
 
@@ -87,49 +100,49 @@ void destroyTree(node_t * node) {
         // pnode = parent node
 
 
-    if (node != NULL) {
+    if (node == NULL) return;
+    if (node->value == NULL) return;
 
-        node_t *cNode = node;
-        node_t *pNode = NULL;
-        // descend through tree in a leftmost direction until we reach a leaf
-        while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
+    node_t *cNode = node;
+    node_t *pNode = NULL;
+    // descend through tree in a leftmost direction until we reach a leaf
+    while (cNode->parent != NULL || cNode->left != NULL || cNode->right != NULL)
+    {
+        if  (cNode->left != NULL || cNode->right != NULL)
         {
-            if  (cNode->left != NULL || cNode->right != NULL)
+            pNode = cNode;
+            if (cNode->left != NULL)
             {
-                pNode = cNode;
-                if (cNode->left != NULL)
-                {
-                    cNode = cNode->left;
-                }
-                else if (cNode->right != NULL)
-                {
-                    cNode = cNode->right;
-                }
+                cNode = cNode->left;
             }
-            // make sure this isn't the root node
-            else if (cNode->parent != NULL)
+            else if (cNode->right != NULL)
             {
-                pNode = cNode->parent;
-                // release the leaf
-                free(cNode);
-
-                cNode = NULL;
-                cNode = pNode;
-                // Need to update the left or right reference to NULL as the child leaf has been deleted!
-                if (cNode->left != NULL)
-                {
-                    cNode->left = NULL;
-                }
-                else if (cNode->right != NULL)
-                {
-                    cNode->right = NULL;
-                }
+                cNode = cNode->right;
             }
         }
-        // loop ends when only the root node remains
-        free(cNode);
-        cNode = NULL;
+        // make sure this isn't the root node
+        else if (cNode->parent != NULL)
+        {
+            pNode = cNode->parent;
+            // release the leaf
+            free(cNode);
+            cNode = NULL;
+            cNode = pNode;
+            // Need to update the left or right reference to NULL as the child leaf has been deleted!
+            if (cNode->left != NULL)
+            {
+                cNode->left = NULL;
+            }
+            else if (cNode->right != NULL)
+            {
+                cNode->right = NULL;
+            }
+        }
     }
+    // loop ends when only the root node remains
+    make_null(cNode); // this is probably an unnecessary precauion against the free function failing
+    free(cNode);
+    cNode = NULL;
 }
 
 
@@ -138,6 +151,7 @@ void destroyTree(node_t * node) {
 void insert(node_t * node, int elem) {
     // steps needed
     //search for and if not found create inode (using the elem as the value) 
+    if (node == NULL) return;
 
     if (!search(node, elem))
     {
@@ -169,11 +183,11 @@ void insert(node_t * node, int elem) {
             }
         }
 
-        iNode->parent = pNode; // is parent actually needed?
+        iNode->parent = pNode;
 
-        if (pNode == NULL)
+        if (pNode->value == NULL)
         {
-            node = iNode; // it is possible that the root node can have previously been removed using 'delete' without destroying the tree
+            node->value = iNode->value; // it is possible that the root node can have previously been 'deleted' using 'delete' without destroying the tree, in which case the root node's value properety will have been set to NULL
         }
         else if (iNode->value < pNode->value)
         {
@@ -197,7 +211,10 @@ void insert(node_t * node, int elem) {
 void delete(node_t * node, int elem) {
     // need to get node that elem points to
 
+    if (node == NULL) return;
+    if (node->value == NULL) return;
 
+    
     node_t *dNode = return_node(node, elem);
 
     if (dNode != NULL)
@@ -222,8 +239,18 @@ void delete(node_t * node, int elem) {
                     pNode->right = NULL;
                 }
             }
-            free(dNode);
-            dNode = NULL;
+            // If the node is the last node in the tree, mark it's contents (i.e. value in this case) as null, but do not delete it, as there is no way to indicate to the code calling this function that the tree is now empty.
+            // If we freed the root node the code calling would still have a pointer, but it would be to an unallocated block of memory.
+            if (dNode->parent == NULL)
+            {
+                make_null(dNode);
+            }
+            else
+            {
+                make_null(dNode);
+                free(dNode);
+                dNode = NULL;
+            }
             return;
         }
     
@@ -267,7 +294,7 @@ void delete(node_t * node, int elem) {
                 sNode = sNode->left;
             }
 
-            // copy the node's data over that of the node to be deleted
+            // copy the node's data (in this case that is just the value property), overwriting that of the node to be deleted
             dNode->value = sNode->value;
             // now the original sNode needs to be deleted
             delete(rNode, sNode->value);
@@ -286,9 +313,12 @@ int main() {
     node_t *myTree;
 
     myTree = createTree(50);
+    if (!myTree) printf("ERROR");
+    delete(myTree,50);
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
-    if (myTree == NULL)
+
+    if (myTree == NULL || myTree->value == NULL)
     {
         printf("\nNull value!");
     }
@@ -342,6 +372,7 @@ int main() {
     printf("\nSearch for 5: %i", search(myTree, 5));
     printf("\nSearch for 200: %i", search(myTree, 200));
 
+    sleep(10);
     destroyTree(myTree);
     myTree = NULL;
     printf("Tree destroyed! Or is it??; mytree = %i", myTree);

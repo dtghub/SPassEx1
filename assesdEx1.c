@@ -20,6 +20,21 @@ void make_null(node_t * node) {
     node->parent = NULL;
 }
 
+int tree_exists(node_t * node) {
+    if (node == NULL)
+    {
+        return 0;
+    }
+    else if (node->value == NULL)
+    {
+        return 1;
+    }
+    else
+    {
+        return 2;
+    }
+}
+
 
 node_t *return_node(node_t * node, int toFind) {
     // search algorithm is; test the node.value to see if it is grater or less than the value you are looking for, if the value you seek is less than node.value, follow left, otherwise follow right.
@@ -89,7 +104,7 @@ node_t * createTree(int firstElem) {
 
 
 
-void destroyTree(node_t * node) {
+node_t * destroyTree(node_t * node) {
     // free up the menory used for the data struct when done
 
     // Walks through the tree and delete the end (leaf) nodes, making sure we don't orphan any nodes.
@@ -100,8 +115,8 @@ void destroyTree(node_t * node) {
         // pnode = parent node
 
 
-    if (node == NULL) return;
-    if (node->value == NULL) return;
+    if (node == NULL) return node;
+    if (node->value == NULL) return node;
 
     node_t *cNode = node;
     node_t *pNode = NULL;
@@ -143,6 +158,7 @@ void destroyTree(node_t * node) {
     make_null(cNode); // this is probably an unnecessary precauion against the free function failing
     free(cNode);
     cNode = NULL;
+    return cNode;
 }
 
 
@@ -309,23 +325,27 @@ int main() {
 
     // use malloc to create the nodes
     // node_t rootNode = createTree(10);
-
+    int treeStatus;
     node_t *myTree;
 
     myTree = createTree(50);
     if (!myTree) printf("ERROR");
     delete(myTree,50);
-    printf("\nSearch for 50: %i", search(myTree, 50));
-    printf("\nSearch for 30: %i", search(myTree, 30));
-
-    if (myTree == NULL || myTree->value == NULL)
+    printf("Search for 50: %i\n", search(myTree, 50));
+    printf("Search for 30: %i\n", search(myTree, 30));
+    treeStatus = tree_exists(myTree);
+    if (treeStatus == 2)
     {
-        printf("\nNull value!");
+        printf("\nTree found!\n");
+        printf("\nNode->value is: %i\n", myTree->value);
+    }
+    else if (treeStatus == 0)
+    {
+        printf("\nTree does not exist");
     }
     else
     {
-        printf("\nnot null!");
-        printf("\nNode->value is: %i\n", myTree->value);
+        printf("\nTree is empty");
     }
 
     printf("Hello from line 209!!: %p\n", myTree->left);
@@ -372,10 +392,24 @@ int main() {
     printf("\nSearch for 5: %i", search(myTree, 5));
     printf("\nSearch for 200: %i", search(myTree, 200));
 
-    sleep(10);
-    destroyTree(myTree);
-    myTree = NULL;
-    printf("Tree destroyed! Or is it??; mytree = %i", myTree);
+    // sleep(10);
+    myTree = destroyTree(myTree);
+    treeStatus = tree_exists(myTree);
+    if (treeStatus == 2)
+    {
+        printf("\nTree found!\n");
+        printf("\nNode->value is: %i", myTree->value);
+    }
+    else if (treeStatus == 0)
+    {
+        printf("\nTree does not exist");
+    }
+    else
+    {
+        printf("\nTree is empty");
+    }
+
+    // printf("Tree destroyed! Or is it??; mytree = %i", myTree);
     printf("\nSearch for 50: %i", search(myTree, 50));
     printf("\nSearch for 30: %i", search(myTree, 30));
     printf("\nSearch for 20: %i", search(myTree, 20));
